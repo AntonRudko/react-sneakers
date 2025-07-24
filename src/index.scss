@@ -1,0 +1,40 @@
+ul {
+	list-style: none;
+}
+button {
+	background-color: transparent;
+	border: 1px solid #f2f2f2;
+	border-radius: 8px;
+	box-sizing: border-box;
+	width: 32px;
+	height: 32px;
+	cursor: pointer;
+}
+
+body {
+	margin: 0;
+	font-family: 'Inter', system-ui;
+	-webkit-font-smoothing: antialiased;
+	-moz-osx-font-smoothing: grayscale;
+	background-color: #e7f6ff;
+}
+
+.wrapper {
+	background-color: #fff;
+	box-shadow: 0 10px 20px rgba(0, 0, 0, 0.4);
+	border-radius: 20px;
+	max-width: 1080px;
+	margin: 50px auto;
+}
+
+.card {
+	border: 1px solid #f3f3f3;
+	padding: 30px;
+	width: 170px;
+	border-radius: 40px;
+}
+
+.card__text {
+	font-size: 14px;
+	font-weight: 400;
+}

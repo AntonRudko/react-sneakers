@@ -1,0 +1,15 @@
+{
+	"emmet.includeLanguages": {
+		"javascript": "javascriptreact",
+		"javascriptreact": "html"
+	},
+	"emmet.includeLanguages": {
+		"javascript": "javascriptreact",
+		"javascriptreact": "javascriptreact"
+	},
+	"emmet.syntaxProfiles": {
+		"javascript": "jsx",
+		"javascriptreact": "jsx"
+	},
+	"emmet.triggerExpansionOnTab": true
+}
