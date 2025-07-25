@@ -1,14 +1,58 @@
 ul {
 	list-style: none;
 }
-button {
+
+.button {
 	background-color: transparent;
-	border: 1px solid #f2f2f2;
+	border: 1px solid #f3f3f2;
 	border-radius: 8px;
 	box-sizing: border-box;
-	width: 32px;
-	height: 32px;
 	cursor: pointer;
+	transition: 0.3s all ease-in-out;
+	&:hover {
+		opacity: 0.5;
+	}
+}
+.green__btn {
+	position: relative;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	font-size: 16px;
+	color: #fff;
+	background-color: #9dd458;
+	border-radius: 18px;
+	padding: 18px;
+	font-weight: 600;
+	transition: 0.4s all ease-in-out;
+	&::before {
+		position: absolute;
+		content: '';
+		background-image: url('../public/img/arrow.svg');
+		background-repeat: no-repeat;
+		background-position: center;
+		background-size: cover;
+		width: 13.714px;
+		height: 12px;
+		right: 40px;
+	}
+	&:active {
+		background: lightgreen(#9dd458, 70%);
+		scale: 1.1;
+	}
+}
+
+* {
+	font-family: 'Inter', system-ui;
+}
+.input {
+	border: none;
+	padding: 10px;
+	font-size: 16px;
+	&:focus {
+		outline: none;
+		border: none;
+	}
 }
 
 body {
@@ -18,23 +62,66 @@ body {
 	-moz-osx-font-smoothing: grayscale;
 	background-color: #e7f6ff;
 }
-
 .wrapper {
 	background-color: #fff;
-	box-shadow: 0 10px 20px rgba(0, 0, 0, 0.4);
+	box-shadow: 0px 10px 20px rgba(0, 0, 0, 0.4);
 	border-radius: 20px;
 	max-width: 1080px;
 	margin: 50px auto;
 }
-
 .card {
 	border: 1px solid #f3f3f3;
 	padding: 30px;
-	width: 170px;
+	width: 140px;
 	border-radius: 40px;
+	transition: 0.2s all ease-in-out;
+	&:hover {
+		box-shadow: 0px 20px 35px rgba(0, 0, 0, 0.06);
+		transform: translateY(-5px);
+	}
 }
+.search__block {
+	border: 1px solid #f3f3f3;
+	border-radius: 10px;
+	padding: 0 15px;
+}
+.overlay {
+	position: absolute;
+	left: 0;
+	top: 0;
 
-.card__text {
-	font-size: 14px;
-	font-weight: 400;
+	width: 100%;
+	height: 100%;
+	background-color: rgba(0, 0, 0, 0.5);
+	z-index: 1;
+}
+.drawer {
+	position: absolute;
+	width: 420px;
+	height: 100%;
+	right: 0;
+	top: 0;
+	background: #fff;
+	box-shadow: -10px 4px 24px rgba(0, 0, 0, 0.06);
+	padding: 30px;
+	box-sizing: border-box;
+
+	.items {
+		overflow: auto;
+		margin-bottom: 40px;
+	}
+}
+.btn__remove--opacity {
+	opacity: 0.5;
+	transition: 0.2s all ease-in-out;
+	cursor: pointer;
+	&:hover {
+		opacity: 1;
+	}
+}
+.cart__item {
+	border: 1px solid #f3f3f2;
+	border-radius: 20px;
+	overflow: hidden;
+	padding: 10px 20px;
 }
