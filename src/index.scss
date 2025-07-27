@@ -69,17 +69,7 @@ body {
 	max-width: 1080px;
 	margin: 50px auto;
 }
-.card {
-	border: 1px solid #f3f3f3;
-	padding: 30px;
-	width: 140px;
-	border-radius: 40px;
-	transition: 0.2s all ease-in-out;
-	&:hover {
-		box-shadow: 0px 20px 35px rgba(0, 0, 0, 0.06);
-		transform: translateY(-5px);
-	}
-}
+
 .search__block {
 	border: 1px solid #f3f3f3;
 	border-radius: 10px;

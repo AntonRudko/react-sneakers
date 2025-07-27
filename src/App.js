@@ -2,6 +2,34 @@ import Card from './components/Card'
 import Header from './components/Header'
 import Drawer from './components/Drawer'
 
+const arr = [
+	{
+		title: 'Чоловічі Кросівки Nike Blazer Mid Suede',
+		price: 12999,
+		imageUrl: './img/sneakers/1.jpg',
+	},
+	{
+		title: 'Чоловічі Кросівки Nike Air Max 270',
+		price: 15600,
+		imageUrl: './img/sneakers/2.jpg',
+	},
+	{
+		title: 'Чоловічі Кросівки Nike Blazer Mid Suede',
+		price: 8499,
+		imageUrl: './img/sneakers/3.jpg',
+	},
+	{
+		title: 'Кросівки Puma X Aka Boku Future Rider',
+		price: 8999,
+		imageUrl: './img/sneakers/4.jpg',
+	},
+	{
+		title: 'Чоловічі Кросівки Under Armour Curry 8',
+		price: 8999,
+		imageUrl: './img/sneakers/5.jpg',
+	},
+]
+
 function App() {
 	return (
 		<>
@@ -22,11 +50,16 @@ function App() {
 							/>
 						</div>
 					</div>
-					<div className='flex justify-between gap-x-5'>
-						<Card />
-						<Card />
-						<Card />
-						<Card />
+					{/* flex gap-x-5 gap-y-10 flex-wrap */}
+					<div className='grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-5 '>
+						{arr.map(obj => (
+							<Card
+								title={obj.title}
+								price={obj.price}
+								imageUrl={obj.imageUrl}
+								onClick={() => console.log(obj)}
+							/>
+						))}
 					</div>
 				</div>
 			</div>
