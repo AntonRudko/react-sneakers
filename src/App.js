@@ -2,6 +2,8 @@ import Card from './components/Card'
 import Header from './components/Header'
 import Drawer from './components/Drawer'
 
+import React from 'react'
+
 const arr = [
 	{
 		title: 'Чоловічі Кросівки Nike Blazer Mid Suede',
@@ -25,17 +27,28 @@ const arr = [
 	},
 	{
 		title: 'Чоловічі Кросівки Under Armour Curry 8',
-		price: 8999,
+		price: 15199,
 		imageUrl: './img/sneakers/5.jpg',
+	},
+	{
+		title: 'Чоловічі Кросівки Nike Kyrie 7',
+		price: 11299,
+		imageUrl: './img/sneakers/6.jpg',
 	},
 ]
 
 function App() {
+	const [cardOpened, setCardOpened] = React.useState(false)
+
 	return (
 		<>
 			<div className='wrapper '>
-				<Drawer />
-				<Header />
+				{cardOpened ? <Drawer /> : null}
+				<Header
+					onClickCard={() => {
+						setCardOpened(true)
+					}}
+				/>
 				<div className='content p-10'>
 					<div className='flex justify-between items-center mb-10'>
 						<h1>Всі кросівки</h1>
@@ -57,7 +70,8 @@ function App() {
 								title={obj.title}
 								price={obj.price}
 								imageUrl={obj.imageUrl}
-								onClick={() => console.log(obj)}
+								onFavorite={() => console.log('Додали закладки')}
+								onPlus={() => console.log('Нажали +')}
 							/>
 						))}
 					</div>

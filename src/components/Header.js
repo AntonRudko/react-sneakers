@@ -1,4 +1,4 @@
-function Header() {
+function Header(props) {
 	return (
 		<header className='flex justify-between  text-[#5C5C5C] items-center p-10 border-solid border-b-2 border-[#EAEAEA]'>
 			<div className='flex items-center gap-x-4'>
@@ -9,9 +9,9 @@ function Header() {
 				</div>
 			</div>
 
-			<ul className='flex gap-x-8'>
-				<li>
-					<img className='size-4 mr-3' src='/img/basket.svg' alt='basket' />
+			<ul className='flex gap-x-8 '>
+				<li className='cursor-pointer' onClick={props.onClickCard}>
+					<img className='size-4 mr-3 ' src='/img/basket.svg' alt='basket' />
 					<span>1205 грн.</span>
 				</li>
 				<li>

@@ -1,12 +1,28 @@
+import React from 'react'
 import styles from './Card.module.scss'
-console.log(styles)
+// console.log(styles)
 
 function Card(props) {
+	function onClickBtn() {
+		console.log('btn was click')
+	}
 
+	const [isAded, setIsAded] = React.useState(false)
+
+	const onClickPlus = () => {
+		setIsAded(!isAded)
+		console.log(isAded)
+	}
+
+	React.useEffect(() => {
+		isAded
+			? console.log(`товар: ${props.title} було додано до корзини `)
+			: console.log(`товар: ${props.title} було видалено з корзини `)
+	}, [isAded])
 	return (
 		// 'card flex flex-col gap-y-4 relative'
 		<div className={styles.card}>
-			<div className='absolute cursor-pointer'>
+			<div className='absolute cursor-pointer' onClick={props.onFavorite}>
 				<img src='./img/heart-unlike.svg' alt='unlike' className='size-8 ' />
 			</div>
 			<div className='text-center'>
@@ -19,9 +35,13 @@ function Card(props) {
 					<span className='uppercase opacity-[0.5] '>Ціна :</span>
 					<b className=''>{props.price}</b>
 				</div>
-				<button className='size-8 button' onClick={props.onClick}>
-					<img src='./img/plus.svg' alt='plus' className='size-3' />
-				</button>
+				{/* <button className='size-8 button' onClick={props.onPlus}> */}
+				<img
+					className={styles.plus}
+					onClick={onClickPlus}
+					src={isAded ? './img/btn-cheked.svg' : './img/btn-plus.svg'}
+					alt='plus'
+				/>
 			</div>
 		</div>
 	)

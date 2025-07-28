@@ -1,6 +1,9 @@
 function Drawer() {
 	return (
-		<div className='overlay hidden'>
+		
+
+
+		<div className='overlay '>
 			<div className='drawer flex flex-col'>
 				<h2 className='text-2xl flex justify-between items-center'>
 					Корзина
