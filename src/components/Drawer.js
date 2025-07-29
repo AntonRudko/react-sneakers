@@ -1,13 +1,11 @@
-function Drawer() {
+function Drawer({ onClose, items = [] }) {
 	return (
-		
-
-
 		<div className='overlay '>
 			<div className='drawer flex flex-col'>
 				<h2 className='text-2xl flex justify-between items-center'>
 					Корзина
 					<img
+						onClick={onClose}
 						src='./img/btn-remove.svg'
 						alt='remove'
 						className='btn__remove--opacity'
@@ -15,38 +13,20 @@ function Drawer() {
 				</h2>
 
 				<div className='items'>
-					<div className='cart__item flex items-center gap-x-5 mt-8'>
-						<img
-							src='./img/sneakers/1.jpg'
-							alt='sneakers'
-							className='size-20'
-						/>
-						<div>
-							<p className='mb-2 text-sm'>Чоловічі Кросівки Nike Air Max 270</p>
-							<b className='text-base'>12 999 грн.</b>
+					{items.map(obj => (
+						<div className='cart__item flex items-center gap-x-5 mt-8'>
+							<img src={obj.imageUrl} alt='sneakers' className='size-20' />
+							<div>
+								<p className='mb-2 text-sm'>{obj.title}</p>
+								<b className='text-base'>{obj.price}</b>
+							</div>
+							<img
+								src='./img/btn-remove.svg'
+								alt='clouse'
+								className='btn__remove--opacity'
+							/>
 						</div>
-						<img
-							src='./img/btn-remove.svg'
-							alt='remove'
-							className='btn__remove--opacity'
-						/>
-					</div>
-					<div className='cart__item flex items-center gap-x-5 mt-8'>
-						<img
-							src='./img/sneakers/2.jpg'
-							alt='sneakers'
-							className='size-20'
-						/>
-						<div>
-							<p className='mb-2 text-sm'>Чоловічі Кросівки Nike Air Max 270</p>
-							<b className='text-base'>12 999 грн.</b>
-						</div>
-						<img
-							src='./img/btn-remove.svg'
-							alt='remove'
-							className='btn__remove--opacity'
-						/>
-					</div>
+					))}
 				</div>
 				<div className='card__total--block mt-auto'>
 					<ul>
