@@ -2,16 +2,21 @@ import React from 'react'
 import styles from './Card.module.scss'
 // console.log(styles)
 
-function Card({ onFavorite, onPlus }) {
+function Card({ title, price, imageUrl, onFavorite, onPlus }) {
 	function onClickBtn() {
 		console.log('btn was click')
 	}
 
 	const [isAded, setIsAded] = React.useState(false)
+	const [isFavorite, setIsFavorite] = React.useState(false)
 
 	const onClickPlus = () => {
-		onPlus({title, price, imageUrl})
+		onPlus({ title, price, imageUrl })
 		setIsAded(!isAded)
+	}
+	const onClickFavorite = () => {
+		onFavorite({ title, price, imageUrl })
+		setIsFavorite(!isFavorite)
 	}
 
 	React.useEffect(() => {
@@ -22,8 +27,12 @@ function Card({ onFavorite, onPlus }) {
 	return (
 		// 'card flex flex-col gap-y-4 relative'
 		<div className={styles.card}>
-			<div className='absolute cursor-pointer' onClick={onFavorite}>
-				<img src='./img/heart-unlike.svg' alt='unlike' className='size-8 ' />
+			<div className='absolute cursor-pointer' onClick={onClickFavorite}>
+				<img
+					src={isFavorite ? './img/heart-like.svg' : './img/heart-unlike.svg'}
+					alt='unlike'
+					className='size-8 '
+				/>
 			</div>
 			<div className='text-center'>
 				<img className='size-28 mb-3 ' src={imageUrl} alt='sneakers' />
