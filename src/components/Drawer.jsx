@@ -1,6 +1,6 @@
 function Drawer({ onRemove, onClose, items = [] }) {
 	return (
-		<div className='overlay '>
+		<div className='overlay h-screen'>
 			<div className='drawer flex flex-col'>
 				<h2 className='text-2xl flex justify-between items-center'>
 					Корзина

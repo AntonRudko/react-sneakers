@@ -1,29 +1,38 @@
 import React from 'react'
 import styles from './Card.module.scss'
 // console.log(styles)
-
-function Card({ title, price, imageUrl, onFavorite, onPlus }) {
+// favorite,plus - стейти карточки коли вона додана до улюбленого і до корзини
+function Card({
+	title,
+	price,
+	imageUrl,
+	onFavorite,
+	onPlus,
+	id,
+	onDrawer,
+	favorited = false,
+}) {
 	function onClickBtn() {
 		console.log('btn was click')
 	}
 
 	const [isAded, setIsAded] = React.useState(false)
-	const [isFavorite, setIsFavorite] = React.useState(false)
+	const [isFavorite, setIsFavorite] = React.useState(favorited)
 
 	const onClickPlus = () => {
-		onPlus({ title, price, imageUrl })
+		onPlus({ title, price, imageUrl, id })
 		setIsAded(!isAded)
 	}
 	const onClickFavorite = () => {
-		onFavorite({ title, price, imageUrl })
+		onFavorite({ title, price, imageUrl, id })
 		setIsFavorite(!isFavorite)
 	}
 
-	React.useEffect(() => {
-		isAded
-			? console.log(`товар: ${title} було додано до корзини `)
-			: console.log(`товар: ${title} було видалено з корзини `)
-	}, [isAded])
+	// React.useEffect(() => {
+	// 	isAded
+	// 		? console.log(`товар: ${title} було додано до корзини useEffect `)
+	// 		: console.log(`товар: ${title} було видалено з корзини useEffect`)
+	// }, [isAded])
 	return (
 		// 'card flex flex-col gap-y-4 relative'
 		<div className={styles.card}>

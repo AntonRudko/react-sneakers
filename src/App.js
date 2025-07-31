@@ -1,6 +1,9 @@
-import Card from './components/Card'
 import Header from './components/Header'
 import Drawer from './components/Drawer'
+import { Routes, Route } from 'react-router-dom'
+
+import Home from './pages/Home'
+import Favorites from './pages/Favorites'
 
 import axios from 'axios'
 import React from 'react'
@@ -25,7 +28,6 @@ function App() {
 			document.body.style.overflow = ''
 		}
 	}, [cardOpened])
-
 	// Запроси на сервер
 	React.useEffect(() => {
 		// fetch('https://68888338adf0e59551ba40aa.mockapi.io/items')
@@ -41,14 +43,23 @@ function App() {
 		axios.get('https://68888338adf0e59551ba40aa.mockapi.io/cart').then(res => {
 			setCardItems(res.data)
 		})
+		axios
+			.get('https://688b84002a52cabb9f5209b5.mockapi.io/favorites')
+			.then(res => {
+				setFavorites(res.data)
+			})
 	}, [])
 	// Додали до корзини та на сервер - post
 	const onAddToCard = obj => {
+		console.log('товар, який додано, в КОРЗИНУ:', obj)
+		console.log('ID=', obj.id)
 		axios.post('https://68888338adf0e59551ba40aa.mockapi.io/cart', obj)
 		setCardItems(prev => [...prev, obj])
 	}
 	// Видалили з корзини та з сервера
 	const onRemoveItem = id => {
+		console.log('---ID карточки що видалили--')
+		console.log(id)
 		axios
 			.delete(`https://68888338adf0e59551ba40aa.mockapi.io/cart/${id}`)
 			.then(() => {
@@ -62,13 +73,26 @@ function App() {
 	const onChangeSearchInput = event => {
 		setSearchValue(event.target.value)
 	}
-	// додали в список бажаного та на сервер
-	// нажаль сервіс mockapi - не дозволив створити таблицю Favorite тобу вибране = корзина
-	const onAddFavorite = obj => {
-		axios.post('https://68888338adf0e59551ba40aa.mockapi.io/cart', obj)
-		setFavorites(prev => [...prev, obj])
+	// додали в список бажаного
+	const onAddToFavorite = obj => {
+		console.log('товар, який вподобали, в ОБРАНЕ:', obj)
+		console.log('ID=', obj.id)
+		if (favorites.find(favobj => favobj.id === obj.id)) {
+			axios
+				.delete(
+					`https://688b84002a52cabb9f5209b5.mockapi.io/favorites/${obj.id}`
+				)
+				.then(() => {
+					setFavorites(prev => prev.filter(item => item.id !== obj.id))
+				})
+				.catch(error => {
+					console.error('Failed to delete item:', error)
+				})
+		} else {
+			axios.post('https://688b84002a52cabb9f5209b5.mockapi.io/favorites', obj)
+			setFavorites(prev => [...prev, obj])
+		}
 	}
-
 	return (
 		<>
 			<div className='wrapper '>
@@ -76,8 +100,6 @@ function App() {
 					<Drawer
 						onRemove={id => {
 							onRemoveItem(id)
-							console.log('---ID карточки що видалили--')
-							console.log(id)
 						}}
 						items={cardItems}
 						onClose={() => {
@@ -90,65 +112,37 @@ function App() {
 						setCardOpened(true)
 					}}
 				/>
-				<div className='content p-10 '>
-					<div className='flex justify-between items-center mb-10'>
-						<h1>
-							{searchValue ? `Пошук по запиту: ${searchValue}` : 'Всі кросівки'}
-						</h1>
-						<div className='search__block flex items-center'>
-							<img src='./img/loupe.svg' alt='loupe' />
-
-							<input
-								onChange={onChangeSearchInput}
-								type='text'
-								name=''
-								id=''
-								value={searchValue}
-								placeholder='Пошук...'
-								className='input'
+				{/* exact - тільки тоді коли роут строго співпада то рендери...*/}
+				<Routes>
+					<Route
+						path='favorites'
+						element={
+							<Favorites
+								items={favorites}
+								onAddToFavorite={onAddToFavorite}
+								onAddToCard={onAddToCard}
 							/>
-							{searchValue && (
-								<img
-									onClick={() => {
-										setSearchValue('')
-									}}
-									src='./img/btn-remove.svg'
-									alt='Clear'
-									className='btn__remove--opacity mr-[-10px]'
-								/>
-							)}
-						</div>
-					</div>
-					{/* flex gap-x-5 gap-y-10 flex-wrap */}
-					<div className='grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-5 '>
-						{items
-							// includes шукає 100% схожість
-							.filter(item =>
-								item.title.toLowerCase().includes(searchValue.toLowerCase())
-							)
-							.map((item, index) => (
-								<Card
-									//щоб можна було розрізняти компоненти
-									key={item.title + index}
-									title={item.title}
-									price={item.price}
-									imageUrl={item.imageUrl}
-									onFavorite={obj => {
-										onAddFavorite(obj)
-									}}
-									// або можна просто сюди передати item не витягуючи данні
-									// про нього з компонента
-									onPlus={obj => {
-										onAddToCard(obj)
-										console.log(item)
-									}}
-								/>
-							))}
-					</div>
-				</div>
+						}
+						exact
+					/>
+					<Route
+						index
+						element={
+							<Home
+								items={items}
+								searchValue={searchValue}
+								setSearchValue={setSearchValue}
+								onChangeSearchInput={onChangeSearchInput}
+								onAddToFavorite={onAddToFavorite}
+								onAddToCard={onAddToCard}
+							/>
+						}
+						exact
+					/>
+					{/* <Route path='*' element={<Favorites />} exact /> */}
+				</Routes>
 			</div>
 		</>
 	)
 }
-
 export default App
