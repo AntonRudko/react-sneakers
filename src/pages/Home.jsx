@@ -1,7 +1,8 @@
 import Card from '../components/Card'
 
 function Home({
-	items,
+	cardItems,
+	items ,
 	searchValue,
 	setSearchValue,
 	onChangeSearchInput,
@@ -52,15 +53,16 @@ function Home({
 							title={item.title}
 							price={item.price}
 							imageUrl={item.imageUrl}
+							id={item.id}
 							onFavorite={obj => {
 								onAddToFavorite(obj)
 							}}
-							id = {item.id}
+							// find - повертає обʼкт абож undef some
+							added={cardItems.some(obj => Number(obj.id) === Number(item.id))}
 							// або можна просто сюди передати item не витягуючи данні
 							// про нього з компонента ну не робити оце: title={item.title}
 							onPlus={obj => {
 								onAddToCard(obj)
-								console.log(item)
 							}}
 						/>
 					))}

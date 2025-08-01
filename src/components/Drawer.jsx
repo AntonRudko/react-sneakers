@@ -26,7 +26,7 @@ function Drawer({ onRemove, onClose, items = [] }) {
 									</div>
 									<img
 										onClick={() => {
-											onRemove(obj.id)
+											onRemove(obj)
 										}}
 										src='./img/btn-remove.svg'
 										alt='remove'

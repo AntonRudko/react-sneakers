@@ -9,14 +9,14 @@ function Card({
 	onFavorite,
 	onPlus,
 	id,
-	onDrawer,
 	favorited = false,
+	added = false,
 }) {
 	function onClickBtn() {
 		console.log('btn was click')
 	}
 
-	const [isAded, setIsAded] = React.useState(false)
+	const [isAded, setIsAded] = React.useState(added)
 	const [isFavorite, setIsFavorite] = React.useState(favorited)
 
 	const onClickPlus = () => {
