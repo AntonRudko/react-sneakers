@@ -1,6 +1,4 @@
-import React from 'react'
 import Card from '../components/Card'
-import AppContext from '../context'
 
 function Home({
 	items,
@@ -26,10 +24,8 @@ function Home({
 				// imageUrl={item.imageUrl}
 				// id={item.id}
 				{...item}
-
 				// або можна просто сюди передати item не витягуючи данні
 				// про нього з компонента ну не робити оце: title={item.title}
-
 
 				onPlus={obj => {
 					onAddToCard(obj)

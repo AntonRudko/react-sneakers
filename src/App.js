@@ -5,6 +5,7 @@ import AppContext from './context'
 
 import Favorites from './pages/Favorites'
 import Home from './pages/Home'
+import Orders from './pages/Orders'
 
 import axios from 'axios'
 import React from 'react'
@@ -12,16 +13,22 @@ import React from 'react'
 function App() {
 	// карточки що є насторінці
 	const [items, setItems] = React.useState([])
+
 	// стейт - масив для зберігання товарів в корзині
 	const [cardItems, setCardItems] = React.useState([])
+
 	// стейт для пошуку через інпут
 	const [searchValue, setSearchValue] = React.useState('')
+
 	// чи відкрита корзина ?
 	const [cardOpened, setCardOpened] = React.useState(false)
+
 	// масив бажаних товарів
 	const [favorites, setFavorites] = React.useState([])
+
 	// для карточок, коли вони ще не завантажилися з бекенду ?
 	const [isLoading, setIsLoading] = React.useState(true)
+
 	// для модалки
 	React.useEffect(() => {
 		if (cardOpened) {
@@ -31,28 +38,28 @@ function App() {
 		}
 	}, [cardOpened])
 	// Запроси на сервер для продуктів
+	// useEffect - не може бути асинхронною функцією тому треба створювати всередині функцію
+	// fetch('https://68888338adf0e59551ba40aa.mockapi.io/items')
+	// 	.then(res => {
+	// 		return res.json()
+	// 	})
+	// 	.then(json => {
+	// 		setItems(json)
+	// 	})
 	React.useEffect(() => {
-		// useEffect - не може бути асинхронною функцією тому треба створювати всередині функцію
-		// fetch('https://68888338adf0e59551ba40aa.mockapi.io/items')
-		// 	.then(res => {
-		// 		return res.json()
-		// 	})
-		// 	.then(json => {
-		// 		setItems(json)
-		// 	})
 		async function fetchData() {
 			// якщо функція більше одного разу виконується
+			// to do: promise.all + try catch
 			setIsLoading(true)
 			const cardResponce = await axios.get(
 				'https://68888338adf0e59551ba40aa.mockapi.io/cart'
 			)
-
 			const favoriteResponce = await axios.get(
 				'https://688b84002a52cabb9f5209b5.mockapi.io/favorites'
 			)
 			const itemsResponce = await axios.get(
 				'https://68888338adf0e59551ba40aa.mockapi.io/items'
-			) // нада запитувати останнім
+			) // нада запитувати останнім щоб був лайк і сердечко
 			setIsLoading(false)
 			setItems(itemsResponce.data)
 			setCardItems(cardResponce.data)
@@ -63,6 +70,7 @@ function App() {
 	// Додали до корзини та на сервер - post
 	const onAddToCard = async obj => {
 		// BUG ID в home != ID в корзині проблема самої БД
+		// fix - додати parrent-ID в БД
 		try {
 			// я думаю, що тут просто можна зробити не строге порівняння ==
 			if (cardItems.find(cardobj => Number(cardobj.id) === Number(obj.id))) {
@@ -72,7 +80,7 @@ function App() {
 				setCardItems(prev =>
 					prev.filter(item => Number(item.id) !== Number(obj.id))
 				)
-				console.log('цей товар вже є в корзині -> ВИДАЛЕНО')
+				console.log('цей товар вже є в корзині -> ВИДАЛЕНО', obj.id)
 			} else {
 				const { data } = await axios.post(
 					'https://68888338adf0e59551ba40aa.mockapi.io/cart',
@@ -87,9 +95,9 @@ function App() {
 		}
 	}
 	// Видалили з корзини та з сервера
+	// parent-ID
 	const onRemoveItem = obj => {
-		console.log('---ID карточки що видалили--')
-		console.log(obj.id)
+		console.log('---ID карточки що видалили-- ' + obj.id)
 		axios
 			.delete(`https://68888338adf0e59551ba40aa.mockapi.io/cart/${obj.id}`)
 			.then(() => {
@@ -98,10 +106,6 @@ function App() {
 			.catch(error => {
 				console.error('Failed to delete item:', error)
 			})
-	}
-	// витягли пошуковий запит value з input
-	const onChangeSearchInput = event => {
-		setSearchValue(event.target.value)
 	}
 	// додали в список бажаного
 	const onAddToFavorite = async obj => {
@@ -113,6 +117,7 @@ function App() {
 					`https://688b84002a52cabb9f5209b5.mockapi.io/favorites/${obj.id}`
 				)
 				setFavorites(prev => prev.filter(item => item.id !== obj.id))
+				console.log('цей товар вже є в обраному -> ВИДАЛЕНО', obj.id)
 			} else {
 				const { data } = await axios.post(
 					'https://688b84002a52cabb9f5209b5.mockapi.io/favorites',
@@ -124,6 +129,10 @@ function App() {
 			alert('Не вдалося додати до обраного')
 		}
 	}
+	// витягли пошуковий запит value з input
+	const onChangeSearchInput = event => {
+		setSearchValue(event.target.value)
+	}
 	// функція що чекає чи є товар в корзині ?
 	const isItemAdded = id => {
 		return cardItems.some(obj => Number(obj.id) === Number(id))
@@ -133,7 +142,7 @@ function App() {
 		return favorites.some(obj => Number(obj.id) === Number(id))
 	}
 	return (
-		// весь код знає, що лежить в AppContext
+		// весь код в який всередині AppContext.Provider знає, що лежить в AppContext
 		<AppContext.Provider
 			value={{
 				cardItems,
@@ -144,6 +153,7 @@ function App() {
 				onAddToFavorite,
 				setCardOpened,
 				setCardItems,
+				onAddToCard,
 			}}
 		>
 			<div className='wrapper '>
@@ -187,6 +197,7 @@ function App() {
 						}
 						exact
 					/>
+					<Route path='orders' element={<Orders />} />
 					{/* <Route path='*' element={<Favorites />} exact /> */}
 				</Routes>
 			</div>

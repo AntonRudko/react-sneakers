@@ -1,7 +1,8 @@
 import axios from 'axios'
 import React from 'react'
-import AppContext from '../context'
+
 import Info from './Info'
+import { useCard } from '../hooks/useCard'
 
 const delay = ms =>
 	new Promise(resolve => {
@@ -9,9 +10,11 @@ const delay = ms =>
 	})
 
 function Drawer({ onRemove, onClose, items = [] }) {
+	// кастомний хук
+	const { cardItems, setCardItems, totalPrice} = useCard()
+
 	const [isOrderComplete, setIsOrderComplete] = React.useState(false)
 	const [orderId, setOrderId] = React.useState(null)
-	const { cardItems, setCardItems } = React.useContext(AppContext)
 	const [isLoading, setIsLoading] = React.useState(false)
 
 	const onClickOrder = async () => {
@@ -21,7 +24,6 @@ function Drawer({ onRemove, onClose, items = [] }) {
 				'https://688b84002a52cabb9f5209b5.mockapi.io/orders',
 				{ items: cardItems }
 			)
-
 			for (let i = 0; i < cardItems.length; i++) {
 				const item = cardItems[i]
 				await axios.delete(
@@ -29,13 +31,11 @@ function Drawer({ onRemove, onClose, items = [] }) {
 				)
 				await delay(1000)
 			}
-
 			setOrderId(data.id)
 			setIsOrderComplete(true)
 			setCardItems([])
 		} catch (error) {
 			alert('Виникла Помилка під час оформлення замовлення :(')
-			console.log(error)
 		}
 		setIsLoading(false)
 	}
@@ -81,12 +81,12 @@ function Drawer({ onRemove, onClose, items = [] }) {
 								<li className='flex justify-between gap-x-2 mb-5'>
 									<span>Разом:</span>
 									<div className='flex-1 border-b border-dashed border-[#DFDFDF]'></div>
-									<b>21 498 грн.</b>
+									<b>{totalPrice} грн.</b>
 								</li>
 								<li className='flex justify-between gap-x-2 mb-5'>
 									<span>Податок 5%:</span>
 									<div className='flex-1 border-b border-dashed border-[#DFDFDF]'></div>
-									<b>1074 грн.</b>
+									<b>{(totalPrice * 5) / 100} грн.</b>
 								</li>
 							</ul>
 						</div>

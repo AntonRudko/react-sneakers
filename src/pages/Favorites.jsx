@@ -1,13 +1,15 @@
+import React from 'react'
 import Card from '../components/Card'
 import AppContext from '../context'
-import React from 'react'
 
 function Favorites({}) {
-	const { favorites, onAddToFavorite } = React.useContext(AppContext)
+	const { favorites, onAddToFavorite, onAddToCard } =
+		React.useContext(AppContext)
 
 	return (
 		<div className='content p-10 '>
-			<div className='flex justify-between items-center mb-10'>
+			<div className='mb-10'>
+				
 				<h1 className='text-3xl'>Мої закладки</h1>
 			</div>
 			{/* flex gap-x-5 gap-y-10 flex-wrap */}
@@ -17,11 +19,14 @@ function Favorites({}) {
 						//щоб можна було розрізняти компоненти
 						key={item.title + index}
 						favorited={true}
+						onPlus={obj => {
+							onAddToCard(obj)
+						}}
 						onFavorite={() => {
 							onAddToFavorite(item)
 						}}
 						{...item}
-						// просто передали item, деструктуризувавши його властивості
+						// просто передали item, деструктуризувавши його властивості, ане витягували самостійно з item
 					/>
 				))}
 			</div>

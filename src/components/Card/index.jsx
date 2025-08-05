@@ -1,6 +1,6 @@
 import React from 'react'
-import styles from './Card.module.scss'
 import ContentLoader from 'react-content-loader'
+import styles from './Card.module.scss'
 // console.log(styles)
 // favorite,plus - стейти карточки коли вона додана до улюбленого і до корзини
 import AppContext from '../../context'
@@ -52,15 +52,17 @@ function Card({
 			) : (
 				<>
 					<div className='absolute cursor-pointer' onClick={onClickFavorite}>
-						<img
-							src={
-								isItemFavorite(id)
-									? './img/heart-like.svg'
-									: './img/heart-unlike.svg'
-							}
-							alt='unlike'
-							className='size-8 '
-						/>
+						{onFavorite && (
+							<img
+								src={
+									isItemFavorite(id)
+										? './img/heart-like.svg'
+										: './img/heart-unlike.svg'
+								}
+								alt='unlike'
+								className='size-8 '
+							/>
+						)}
 					</div>
 					<div className='text-center'>
 						<img className='size-28 mb-3 ' src={imageUrl} alt='sneakers' />
@@ -73,14 +75,18 @@ function Card({
 							<b className=''>{price}</b>
 						</div>
 						{/* <button className='size-8 button' onClick={onPlus}> */}
-						<img
-							className={styles.plus}
-							onClick={onClickPlus}
-							src={
-								isItemAdded(id) ? './img/btn-cheked.svg' : './img/btn-plus.svg'
-							}
-							alt='plus'
-						/>
+						{onPlus && (
+							<img
+								className={styles.plus}
+								onClick={onClickPlus}
+								src={
+									isItemAdded(id)
+										? './img/btn-cheked.svg'
+										: './img/btn-plus.svg'
+								}
+								alt='plus'
+							/>
+						)}
 					</div>
 				</>
 			)}

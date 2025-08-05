@@ -1,6 +1,10 @@
 import { Link } from 'react-router-dom'
+import { useCard } from '../hooks/useCard'
 
 function Header(props) {
+	// кастомний хук
+	const { totalPrice } = useCard()
+
 	return (
 		<header className='flex justify-between  text-[#5C5C5C] items-center p-10 border-solid border-b-2 border-[#EAEAEA]'>
 			<Link className='no-underline text-inherit' to='/'>
@@ -16,7 +20,7 @@ function Header(props) {
 			<ul className='flex gap-x-8 '>
 				<li className='cursor-pointer' onClick={props.onClickCard}>
 					<img className='size-4 mr-3 ' src='/img/basket.svg' alt='basket' />
-					<span>1205 грн.</span>
+					<span>{totalPrice} грн.</span>
 				</li>
 				<li className='cursor-pointer'>
 					<Link className='no-underline text-inherit' to='/favorites'>
@@ -28,9 +32,12 @@ function Header(props) {
 						<span>Вибране</span>
 					</Link>
 				</li>
+
 				<li className='cursor-pointer'>
-					<img className='size-4 mr-3 ' src='/img/user.svg' alt='user' />
-					<span>Профіль</span>
+					<Link className='no-underline text-inherit' to='/orders'>
+						<img className='size-4 mr-3 ' src='/img/user.svg' alt='user' />
+						<span>Профіль</span>
+					</Link>
 				</li>
 			</ul>
 		</header>
