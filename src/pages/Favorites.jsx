@@ -1,6 +1,10 @@
 import Card from '../components/Card'
+import AppContext from '../context'
+import React from 'react'
 
-function Favorites({ items, onAddToFavorite }) {
+function Favorites({}) {
+	const { favorites, onAddToFavorite } = React.useContext(AppContext)
+
 	return (
 		<div className='content p-10 '>
 			<div className='flex justify-between items-center mb-10'>
@@ -8,7 +12,7 @@ function Favorites({ items, onAddToFavorite }) {
 			</div>
 			{/* flex gap-x-5 gap-y-10 flex-wrap */}
 			<div className='grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-5 '>
-				{items.map((item, index) => (
+				{favorites.map((item, index) => (
 					<Card
 						//щоб можна було розрізняти компоненти
 						key={item.title + index}

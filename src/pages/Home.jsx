@@ -1,14 +1,47 @@
+import React from 'react'
 import Card from '../components/Card'
+import AppContext from '../context'
 
 function Home({
-	cardItems,
-	items ,
+	items,
 	searchValue,
 	setSearchValue,
 	onChangeSearchInput,
 	onAddToFavorite,
 	onAddToCard,
+	isLoading,
 }) {
+	const renderItems = () => {
+		// includes шукає 100% схожість
+		const filteredItems = items.filter(item =>
+			item.title.toLowerCase().includes(searchValue.toLowerCase())
+		)
+		// [...Array(8)]
+		return (isLoading ? [...Array(8)] : filteredItems).map((item, index) => (
+			<Card
+				//щоб можна було розрізняти компоненти
+				key={index}
+				// title={item.title}
+				// price={item.price}
+				// imageUrl={item.imageUrl}
+				// id={item.id}
+				{...item}
+
+				// або можна просто сюди передати item не витягуючи данні
+				// про нього з компонента ну не робити оце: title={item.title}
+
+
+				onPlus={obj => {
+					onAddToCard(obj)
+				}}
+				onFavorite={obj => {
+					onAddToFavorite(obj)
+				}}
+				loading={isLoading}
+			/>
+		))
+	}
+
 	return (
 		<div className='content p-10 '>
 			<div className='flex justify-between items-center mb-10'>
@@ -41,31 +74,7 @@ function Home({
 			</div>
 			{/* flex gap-x-5 gap-y-10 flex-wrap */}
 			<div className='grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-5 '>
-				{items
-					// includes шукає 100% схожість
-					.filter(item =>
-						item.title.toLowerCase().includes(searchValue.toLowerCase())
-					)
-					.map((item, index) => (
-						<Card
-							//щоб можна було розрізняти компоненти
-							key={item.title + index}
-							title={item.title}
-							price={item.price}
-							imageUrl={item.imageUrl}
-							id={item.id}
-							onFavorite={obj => {
-								onAddToFavorite(obj)
-							}}
-							// find - повертає обʼкт абож undef some
-							added={cardItems.some(obj => Number(obj.id) === Number(item.id))}
-							// або можна просто сюди передати item не витягуючи данні
-							// про нього з компонента ну не робити оце: title={item.title}
-							onPlus={obj => {
-								onAddToCard(obj)
-							}}
-						/>
-					))}
+				{renderItems()}
 			</div>
 		</div>
 	)

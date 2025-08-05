@@ -1,4 +1,45 @@
+import axios from 'axios'
+import React from 'react'
+import AppContext from '../context'
+import Info from './Info'
+
+const delay = ms =>
+	new Promise(resolve => {
+		setTimeout(resolve, ms)
+	})
+
 function Drawer({ onRemove, onClose, items = [] }) {
+	const [isOrderComplete, setIsOrderComplete] = React.useState(false)
+	const [orderId, setOrderId] = React.useState(null)
+	const { cardItems, setCardItems } = React.useContext(AppContext)
+	const [isLoading, setIsLoading] = React.useState(false)
+
+	const onClickOrder = async () => {
+		try {
+			setIsLoading(true)
+			const { data } = await axios.post(
+				'https://688b84002a52cabb9f5209b5.mockapi.io/orders',
+				{ items: cardItems }
+			)
+
+			for (let i = 0; i < cardItems.length; i++) {
+				const item = cardItems[i]
+				await axios.delete(
+					`https://68888338adf0e59551ba40aa.mockapi.io/cart/${item.id}`
+				)
+				await delay(1000)
+			}
+
+			setOrderId(data.id)
+			setIsOrderComplete(true)
+			setCardItems([])
+		} catch (error) {
+			alert('Виникла Помилка під час оформлення замовлення :(')
+			console.log(error)
+		}
+		setIsLoading(false)
+	}
+
 	return (
 		<div className='overlay h-screen'>
 			<div className='drawer flex flex-col'>
@@ -49,20 +90,28 @@ function Drawer({ onRemove, onClose, items = [] }) {
 								</li>
 							</ul>
 						</div>
-						<button className='button green__btn '>Оформити замовлення</button>
+						<button
+							disabled={isLoading}
+							onClick={onClickOrder}
+							className='button green__btn '
+						>
+							Оформити замовлення
+						</button>
 					</>
 				) : (
-					<div className='flex flex-col items-center mt-auto mb-auto'>
-						<img src='./img/empty-box.png' alt='box' className='size-32 mb-5' />
-						<p className='text-2xl font-semibold mb-2 '>Корзина пуста</p>
-						<p className='text-center opacity-40 max-w-72 mb-10'>
-							Додайте хоча б одну пару кросівок, щоб зробити замовлення.
-						</p>
-
-						<button className='button green__btn--empty ' onClick={onClose}>
-							Повернутися назад
-						</button>
-					</div>
+					<Info
+						title={isOrderComplete ? 'Замовлення оформлено!' : 'Корзина пуста'}
+						description={
+							isOrderComplete
+								? `Ваше замовлення №${orderId} скоро буде предано в службу доставки`
+								: 'Додайте хоча б одну пару кросівок, щоб зробити замовлення.'
+						}
+						image={
+							isOrderComplete
+								? './img/complete-order.png'
+								: './img/empty-box.png'
+						}
+					/>
 				)}
 			</div>
 		</div>

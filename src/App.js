@@ -1,9 +1,10 @@
-import Header from './components/Header'
+import { Route, Routes } from 'react-router-dom'
 import Drawer from './components/Drawer'
-import { Routes, Route } from 'react-router-dom'
+import Header from './components/Header'
+import AppContext from './context'
 
-import Home from './pages/Home'
 import Favorites from './pages/Favorites'
+import Home from './pages/Home'
 
 import axios from 'axios'
 import React from 'react'
@@ -19,6 +20,8 @@ function App() {
 	const [cardOpened, setCardOpened] = React.useState(false)
 	// масив бажаних товарів
 	const [favorites, setFavorites] = React.useState([])
+	// для карточок, коли вони ще не завантажилися з бекенду ?
+	const [isLoading, setIsLoading] = React.useState(true)
 	// для модалки
 	React.useEffect(() => {
 		if (cardOpened) {
@@ -29,6 +32,7 @@ function App() {
 	}, [cardOpened])
 	// Запроси на сервер для продуктів
 	React.useEffect(() => {
+		// useEffect - не може бути асинхронною функцією тому треба створювати всередині функцію
 		// fetch('https://68888338adf0e59551ba40aa.mockapi.io/items')
 		// 	.then(res => {
 		// 		return res.json()
@@ -36,8 +40,9 @@ function App() {
 		// 	.then(json => {
 		// 		setItems(json)
 		// 	})
-
 		async function fetchData() {
+			// якщо функція більше одного разу виконується
+			setIsLoading(true)
 			const cardResponce = await axios.get(
 				'https://68888338adf0e59551ba40aa.mockapi.io/cart'
 			)
@@ -48,6 +53,7 @@ function App() {
 			const itemsResponce = await axios.get(
 				'https://68888338adf0e59551ba40aa.mockapi.io/items'
 			) // нада запитувати останнім
+			setIsLoading(false)
 			setItems(itemsResponce.data)
 			setCardItems(cardResponce.data)
 			setFavorites(favoriteResponce.data)
@@ -100,9 +106,9 @@ function App() {
 	// додали в список бажаного
 	const onAddToFavorite = async obj => {
 		try {
-			console.log('товар, який вподобали, в ОБРАНЕ:', obj)
+			console.log('товар, який додали, в ОБРАНЕ:', obj)
 			console.log('ID=', obj.id)
-			if (favorites.find(favobj => favobj.id === obj.id)) {
+			if (favorites.find(favobj => Number(favobj.id) === Number(obj.id))) {
 				axios.delete(
 					`https://688b84002a52cabb9f5209b5.mockapi.io/favorites/${obj.id}`
 				)
@@ -118,8 +124,28 @@ function App() {
 			alert('Не вдалося додати до обраного')
 		}
 	}
+	// функція що чекає чи є товар в корзині ?
+	const isItemAdded = id => {
+		return cardItems.some(obj => Number(obj.id) === Number(id))
+	}
+	// find - повертає обʼкт абож undef some
+	const isItemFavorite = id => {
+		return favorites.some(obj => Number(obj.id) === Number(id))
+	}
 	return (
-		<>
+		// весь код знає, що лежить в AppContext
+		<AppContext.Provider
+			value={{
+				cardItems,
+				favorites,
+				items,
+				isItemAdded,
+				isItemFavorite,
+				onAddToFavorite,
+				setCardOpened,
+				setCardItems,
+			}}
+		>
 			<div className='wrapper '>
 				{cardOpened && (
 					<Drawer
@@ -141,13 +167,7 @@ function App() {
 				<Routes>
 					<Route
 						path='favorites'
-						element={
-							<Favorites
-								items={favorites}
-								onAddToFavorite={onAddToFavorite}
-								onAddToCard={onAddToCard}
-							/>
-						}
+						element={<Favorites onAddToCard={onAddToCard} />}
 						exact
 					/>
 					<Route
@@ -161,6 +181,8 @@ function App() {
 								onChangeSearchInput={onChangeSearchInput}
 								onAddToFavorite={onAddToFavorite}
 								onAddToCard={onAddToCard}
+								isLoading={isLoading}
+								favorites={favorites}
 							/>
 						}
 						exact
@@ -168,7 +190,7 @@ function App() {
 					{/* <Route path='*' element={<Favorites />} exact /> */}
 				</Routes>
 			</div>
-		</>
+		</AppContext.Provider>
 	)
 }
 export default App
