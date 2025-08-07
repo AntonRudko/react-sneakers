@@ -75,7 +75,9 @@ function App() {
 		// fix - додати parrent-ID в БД
 		try {
 			const findItem = cardItems.find(
-				cardobj => Number(cardobj.parentId) === Number(obj.id)
+				cardobj =>
+					Number(cardobj.parentId) === Number(obj.id) ||
+					Number(cardobj.parentId) === Number(obj.parentId)
 			)
 			// я думаю, що тут просто можна зробити не строге порівняння ==
 			if (findItem) {
@@ -123,13 +125,26 @@ function App() {
 	// додали в список бажаного
 	const onAddToFavorite = async obj => {
 		try {
+			const findItem = favorites.find(
+				favobj =>
+					Number(favobj.parentId) === Number(obj.id) ||
+					Number(favobj.parentId) === Number(obj.parentId)
+			)
 			console.log('товар, який додали, в ОБРАНЕ:', obj)
 			console.log('ID=', obj.id)
-			if (favorites.find(favobj => Number(favobj.id) === Number(obj.id))) {
+			if (findItem) {
 				axios.delete(
-					`https://688b84002a52cabb9f5209b5.mockapi.io/favorites/${obj.id}`
+					`https://688b84002a52cabb9f5209b5.mockapi.io/favorites/${findItem.id}`
 				)
-				setFavorites(prev => prev.filter(item => item.id !== obj.id))
+
+				setFavorites(prev =>
+					prev.filter(item => Number(item.parentId) !== Number(obj.id))
+				)
+				setFavorites(prev =>
+					prev.filter(item => Number(item.id) !== Number(obj.id))
+				)
+				console.log(findItem)
+				console.log(favorites)
 				console.log('цей товар вже є в обраному -> ВИДАЛЕНО', obj.id)
 			} else {
 				const { data } = await axios.post(
