@@ -12,18 +12,23 @@ function Card({
 	onFavorite,
 	onPlus,
 	id,
+	parentId,
+	favorited = false,
 	loading = false,
 }) {
 	function onClickBtn() {
 		console.log('btn was click')
 	}
 	const { isItemAdded, isItemFavorite } = React.useContext(AppContext)
+	const obj = { title, price, imageUrl, parentId: id, id }
+	// parentId - ID що в основній таблиці який аля буде не змінним
+	// бо в кожній новій таблиці вішається свій новий
 
 	const onClickPlus = () => {
-		onPlus({ title, price, imageUrl, id })
+		onPlus(obj)
 	}
 	const onClickFavorite = () => {
-		onFavorite({ title, price, imageUrl, id })
+		onFavorite(obj)
 	}
 
 	// React.useEffect(() => {
@@ -55,7 +60,7 @@ function Card({
 						{onFavorite && (
 							<img
 								src={
-									isItemFavorite(id)
+									isItemFavorite(id) || favorited
 										? './img/heart-like.svg'
 										: './img/heart-unlike.svg'
 								}

@@ -41,9 +41,6 @@ function Drawer({ onRemove, onClose, opened, items = [] }) {
 		}
 		setIsLoading(false)
 	}
-	{
-		console.log(opened)
-	}
 
 	return (
 		<div

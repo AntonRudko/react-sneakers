@@ -9,7 +9,6 @@ function Favorites({}) {
 	return (
 		<div className='content p-10 '>
 			<div className='mb-10'>
-				
 				<h1 className='text-3xl'>Мої закладки</h1>
 			</div>
 			{/* flex gap-x-5 gap-y-10 flex-wrap */}
@@ -25,6 +24,11 @@ function Favorites({}) {
 						onFavorite={() => {
 							onAddToFavorite(item)
 						}}
+						// id={item.parentId}
+						// // я аля переприсвоїв ID
+						// imageUrl={item.imageUrl}
+						// price={item.price}
+						// title={item.title}
 						{...item}
 						// просто передали item, деструктуризувавши його властивості, ане витягували самостійно з item
 					/>

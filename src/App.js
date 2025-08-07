@@ -49,21 +49,23 @@ function App() {
 	React.useEffect(() => {
 		async function fetchData() {
 			// якщо функція більше одного разу виконується
-			// to do: promise.all + try catch
-			setIsLoading(true)
-			const cardResponce = await axios.get(
-				'https://68888338adf0e59551ba40aa.mockapi.io/cart'
-			)
-			const favoriteResponce = await axios.get(
-				'https://688b84002a52cabb9f5209b5.mockapi.io/favorites'
-			)
-			const itemsResponce = await axios.get(
-				'https://68888338adf0e59551ba40aa.mockapi.io/items'
-			) // нада запитувати останнім щоб був лайк і сердечко
-			setIsLoading(false)
-			setItems(itemsResponce.data)
-			setCardItems(cardResponce.data)
-			setFavorites(favoriteResponce.data)
+			try {
+				setIsLoading(true)
+
+				const [cardResponce, favoriteResponce, itemsResponce] =
+					await Promise.all([
+						axios.get('https://68888338adf0e59551ba40aa.mockapi.io/cart'),
+						axios.get('https://688b84002a52cabb9f5209b5.mockapi.io/favorites'),
+						axios.get('https://68888338adf0e59551ba40aa.mockapi.io/items'),
+					])
+				setIsLoading(false)
+				setItems(itemsResponce.data)
+				setCardItems(cardResponce.data)
+				setFavorites(favoriteResponce.data)
+			} catch (error) {
+				alert('Виникла помилка під час завантаження данних!')
+				console.error(error)
+			}
 		}
 		fetchData()
 	}, [])
@@ -72,13 +74,16 @@ function App() {
 		// BUG ID в home != ID в корзині проблема самої БД
 		// fix - додати parrent-ID в БД
 		try {
+			const findItem = cardItems.find(
+				cardobj => Number(cardobj.parentId) === Number(obj.id)
+			)
 			// я думаю, що тут просто можна зробити не строге порівняння ==
-			if (cardItems.find(cardobj => Number(cardobj.id) === Number(obj.id))) {
+			if (findItem) {
 				axios.delete(
-					`https://68888338adf0e59551ba40aa.mockapi.io/cart/${obj.id}`
+					`https://68888338adf0e59551ba40aa.mockapi.io/cart/${findItem.id}`
 				)
 				setCardItems(prev =>
-					prev.filter(item => Number(item.id) !== Number(obj.id))
+					prev.filter(item => Number(item.parentId) !== Number(obj.id))
 				)
 				console.log('цей товар вже є в корзині -> ВИДАЛЕНО', obj.id)
 			} else {
@@ -92,20 +97,28 @@ function App() {
 			}
 		} catch (error) {
 			alert('Не вдалося додати до Корзини')
+			console.error(error)
 		}
 	}
 	// Видалили з корзини та з сервера
 	// parent-ID
-	const onRemoveItem = obj => {
-		console.log('---ID карточки що видалили-- ' + obj.id)
-		axios
-			.delete(`https://68888338adf0e59551ba40aa.mockapi.io/cart/${obj.id}`)
-			.then(() => {
-				setCardItems(prev => prev.filter(item => item.id !== obj.id))
-			})
-			.catch(error => {
-				console.error('Failed to delete item:', error)
-			})
+	const onRemoveItem = async obj => {
+		try {
+			console.log('---ID карточки що видалили-- ' + obj.id)
+			axios
+				.delete(`https://68888338adf0e59551ba40aa.mockapi.io/cart/${obj.id}`)
+				.then(() => {
+					setCardItems(prev =>
+						prev.filter(item => Number(item.id) !== Number(obj.id))
+					)
+				})
+				.catch(error => {
+					console.error('Failed to delete item:', error)
+				})
+		} catch (error) {
+			alert('Не вдалося видалити з Корзини')
+			console.error(error)
+		}
 	}
 	// додали в список бажаного
 	const onAddToFavorite = async obj => {
@@ -127,6 +140,7 @@ function App() {
 			}
 		} catch (error) {
 			alert('Не вдалося додати до обраного')
+			console.error(error)
 		}
 	}
 	// витягли пошуковий запит value з input
@@ -135,12 +149,14 @@ function App() {
 	}
 	// функція що чекає чи є товар в корзині ?
 	const isItemAdded = id => {
-		return cardItems.some(obj => Number(obj.id) === Number(id))
+		return cardItems.some(obj => Number(obj.parentId) === Number(id))
 	}
+
 	// find - повертає обʼкт абож undef some
 	const isItemFavorite = id => {
-		return favorites.some(obj => Number(obj.id) === Number(id))
+		return favorites.some(obj => Number(obj.parentId) === Number(id))
 	}
+
 	return (
 		// весь код в який всередині AppContext.Provider знає, що лежить в AppContext
 		<AppContext.Provider
@@ -157,7 +173,6 @@ function App() {
 			}}
 		>
 			<div className='wrapper '>
-				
 				<Drawer
 					onRemove={id => {
 						onRemoveItem(id)
