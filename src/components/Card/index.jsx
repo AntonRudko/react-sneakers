@@ -68,7 +68,7 @@ function Card({
 						<img className='size-28 mb-3 ' src={imageUrl} alt='sneakers' />
 					</div>
 
-					<h5 className='card__text text-sm font-normal min-h-16'>{title}</h5>
+					<h5 className=' text-sm font-normal min-h-16'>{title}</h5>
 					<div className='flex justify-between items-center gap-x-10'>
 						<div className='flex flex-col gap-y-1 text-xs'>
 							<span className='uppercase opacity-[0.5] '>Ціна :</span>

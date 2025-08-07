@@ -157,17 +157,18 @@ function App() {
 			}}
 		>
 			<div className='wrapper '>
-				{cardOpened && (
-					<Drawer
-						onRemove={id => {
-							onRemoveItem(id)
-						}}
-						items={cardItems}
-						onClose={() => {
-							setCardOpened(false)
-						}}
-					/>
-				)}
+				
+				<Drawer
+					onRemove={id => {
+						onRemoveItem(id)
+					}}
+					items={cardItems}
+					onClose={() => {
+						setCardOpened(false)
+					}}
+					opened={cardOpened}
+				/>
+
 				<Header
 					onClickCard={() => {
 						setCardOpened(true)

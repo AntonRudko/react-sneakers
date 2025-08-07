@@ -1,17 +1,19 @@
 import axios from 'axios'
 import React from 'react'
 
-import Info from './Info'
-import { useCard } from '../hooks/useCard'
+import { useCard } from '../../hooks/useCard'
+import Info from '../Info'
+
+import styles from './Drawer.module.scss'
 
 const delay = ms =>
 	new Promise(resolve => {
 		setTimeout(resolve, ms)
 	})
 
-function Drawer({ onRemove, onClose, items = [] }) {
+function Drawer({ onRemove, onClose, opened, items = [] }) {
 	// кастомний хук
-	const { cardItems, setCardItems, totalPrice} = useCard()
+	const { cardItems, setCardItems, totalPrice } = useCard()
 
 	const [isOrderComplete, setIsOrderComplete] = React.useState(false)
 	const [orderId, setOrderId] = React.useState(null)
@@ -39,26 +41,33 @@ function Drawer({ onRemove, onClose, items = [] }) {
 		}
 		setIsLoading(false)
 	}
+	{
+		console.log(opened)
+	}
 
 	return (
-		<div className='overlay h-screen'>
-			<div className='drawer flex flex-col'>
+		<div
+			className={` ${styles.overlay} h-screen ${
+				opened ? styles.overlay__visible : ''
+			}`}
+		>
+			<div className={` ${styles.drawer} flex flex-col`}>
 				<h2 className='text-2xl flex justify-between items-center'>
 					Корзина
 					<img
 						onClick={onClose}
 						src='./img/btn-remove.svg'
 						alt='remove'
-						className='btn__remove--opacity'
+						className={`${styles.btn__remove_opacity}`}
 					/>
 				</h2>
 				{items.length > 0 ? (
 					<>
-						<div className='items'>
+						<div className={`${styles.items}`}>
 							{items.map((obj, index) => (
 								<div
 									key={index}
-									className='cart__item flex items-center gap-x-5 mt-8'
+									className={`${styles.card__item} flex items-center gap-x-5 mt-8`}
 								>
 									<img src={obj.imageUrl} alt='sneakers' className='size-20' />
 									<div>
@@ -71,12 +80,12 @@ function Drawer({ onRemove, onClose, items = [] }) {
 										}}
 										src='./img/btn-remove.svg'
 										alt='remove'
-										className='btn__remove--opacity'
+										className={`${styles.btn__remove_opacity}`}
 									/>
 								</div>
 							))}
 						</div>
-						<div className='card__total--block mt-auto'>
+						<div className='mt-auto'>
 							<ul>
 								<li className='flex justify-between gap-x-2 mb-5'>
 									<span>Разом:</span>
