@@ -25,15 +25,20 @@ function Orders({}) {
 
 	return (
 		<div className='content p-10 '>
-			{orders.length > 0 ? (
+			{isLoading ? (
+				<div className='grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-5 '>
+					{[...Array(8)].map((_, index) => (
+						<Card key={index} loading={true} />
+					))}
+				</div>
+			) : orders.length > 0 ? (
 				<>
 					<div className='mb-10'>
 						<h1 className='text-3xl'>Мої покупки</h1>
 					</div>
-					{/* flex gap-x-5 gap-y-10 flex-wrap */}
 					<div className='grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-5 '>
-						{(isLoading ? [...Array(8)] : orders).map((item, index) => (
-							<Card key={index} {...item} loading={isLoading} />
+						{orders.map((item, index) => (
+							<Card key={index} {...item} loading={false} />
 						))}
 					</div>
 				</>

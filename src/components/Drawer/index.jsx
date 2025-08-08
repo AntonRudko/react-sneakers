@@ -41,7 +41,9 @@ function Drawer({ onRemove, onClose, opened, items = [] }) {
 		}
 		setIsLoading(false)
 	}
-
+	if (!opened && isOrderComplete) {
+		setIsOrderComplete(false)
+	}
 	return (
 		<div
 			className={` ${styles.overlay} h-screen ${
